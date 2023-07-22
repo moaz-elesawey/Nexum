@@ -35,7 +35,7 @@
  *
  * Used to inialize a Tensor in Memory with (m*n) size filled
  * with Garbage from Memory which is different from random initialization.
- * for random initialization Nexum_Tensor_init_rand(), Nexum_Tensor_init_randn().
+ * for random initialization Nexum_Tensor_alloc_rand(), Nexum_Tensor_alloc_randn().
  * and it works like that: it checks first that the tensor is not already allocated
  * or had been allocated before using `allocated` param.
  * and if not it allocates new memory to it which is avery hacky way to avoid Memory Leak.
@@ -48,25 +48,19 @@
  *
  * @todo Rewrite code to handle Already allocated Tensors.
  */
-void Nexum_Tensor_init(Nexum_Tensor* A, u64 m, u64 n){
+Nexum_CDEF void Nexum_Tensor_alloc(Nexum_Tensor* A, u64 m, u64 n){
 
 	if(A->allocated) {
 		if(m*n != A->m*A->n) {
 			Nexum_Tensor_free(A);
+			A->data = (DTYPE*)malloc(sizeof(DTYPE)*m*n);
 			A->allocated = true;
-			A->data = (f64*)malloc(sizeof(f64)*m*n);
 		}
 	} else {
+		A->data = (DTYPE*)malloc(sizeof(DTYPE)*m*n);
 		A->allocated = true;
-		A->data = (f64*)malloc(sizeof(f64)*m*n);
 	}
 	A->m = m; A->n = n;
-
-	/* if(!A->allocated) { */
-	/* 	A->m = m; A->n = n; */
-	/* 	A->allocated = true; */
-	/* 	A->data = (f64*) malloc(sizeof (f64) * m*n); */
-	/* } */
 }
 
 /**
@@ -80,10 +74,11 @@ void Nexum_Tensor_init(Nexum_Tensor* A, u64 m, u64 n){
  *
  * @return void
  */
-void Nexum_Tensor_init_zeros(Nexum_Tensor* A, u64 m, u64 n){
-	Nexum_Tensor_init(A, m, n);
-	for(u64 i=0; i<m; i++) {
-		for(u64 j=0; j<n; j++) {
+Nexum_CDEF void Nexum_Tensor_alloc_zeros(Nexum_Tensor* A, u64 m, u64 n){
+	Nexum_Tensor_alloc(A, m, n);
+	u64 i, j;
+    Nexum_LOOP(i, m) {
+		Nexum_LOOP(j, n) {
 			A->data[n*i + j] = 0.0f;
 		}
 	}
@@ -100,10 +95,11 @@ void Nexum_Tensor_init_zeros(Nexum_Tensor* A, u64 m, u64 n){
  *
  * @return void
  */
-void Nexum_Tensor_init_ones(Nexum_Tensor* A, u64 m, u64 n){
-	Nexum_Tensor_init(A, m, n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_alloc_ones(Nexum_Tensor* A, u64 m, u64 n){
+	Nexum_Tensor_alloc(A, m, n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			A->data[A->n*i + j] = 1.0f;
 		}
 	}
@@ -123,12 +119,13 @@ void Nexum_Tensor_init_ones(Nexum_Tensor* A, u64 m, u64 n){
  * 
  * @todo Reimplement it using the BLAS library.
  */
-void Nexum_Tensor_init_rand(Nexum_Tensor* A, u64 m, u64 n){
+Nexum_CDEF void Nexum_Tensor_alloc_rand(Nexum_Tensor* A, u64 m, u64 n){
 	srand(time(NULL));
-	Nexum_Tensor_init(A, m, n);
-	for(u64 i=0; i<m; i++) {
-		for(u64 j=0; j<n; j++) {
-			A->data[n*i + j] = (f64)rand()/(f64)RAND_MAX;
+	Nexum_Tensor_alloc(A, m, n);
+	u64 i, j;
+    Nexum_LOOP(i, m) {
+		Nexum_LOOP(j, n) {
+			A->data[n*i + j] = (DTYPE)rand()/(DTYPE)RAND_MAX;
 		}
 	}
 }
@@ -147,12 +144,13 @@ void Nexum_Tensor_init_rand(Nexum_Tensor* A, u64 m, u64 n){
  *
  * @todo Reimplement it using the BLAS library.
  */
-void Nexum_Tensor_init_randn(Nexum_Tensor* A, u64 m, u64 n){
+Nexum_CDEF void Nexum_Tensor_alloc_randn(Nexum_Tensor* A, u64 m, u64 n){
 	srand(time(NULL));
-	Nexum_Tensor_init(A, m, n);
-	for(u64 i=0; i<m; i++) {
-		for(u64 j=0; j<n; j++) {
-			A->data[n*i + j] = (f64)rand()/(f64)RAND_MAX;
+	Nexum_Tensor_alloc(A, m, n);
+	u64 i, j;
+    Nexum_LOOP(i, m) {
+		Nexum_LOOP(j, n) {
+			A->data[n*i + j] = (DTYPE)rand()/(DTYPE)RAND_MAX;
 		}
 	}
 }
@@ -170,9 +168,10 @@ void Nexum_Tensor_init_randn(Nexum_Tensor* A, u64 m, u64 n){
  *
  * @return void
  */
-void Nexum_Tensor_init_eye(Nexum_Tensor* A, u64 m){
-	Nexum_Tensor_init(A, m, m);
-	for(u64 i=0; i<m; i++) {
+Nexum_CDEF void Nexum_Tensor_alloc_eye(Nexum_Tensor* A, u64 m){
+	Nexum_Tensor_alloc(A, m, m);
+    u64 i;
+	Nexum_LOOP(i, m) {
 		A->data[m*i + i] = 1.0f;
 	}
 }
@@ -195,11 +194,12 @@ void Nexum_Tensor_init_eye(Nexum_Tensor* A, u64 m){
  *
  * @return void
  */
-void Nexum_Tensor_init_arange(Nexum_Tensor* A, f64 start, f64 end, f64 step) {
+Nexum_CDEF void Nexum_Tensor_alloc_arange(Nexum_Tensor* A, DTYPE start, DTYPE end, DTYPE step) {
 	u64 n = (u64)ceil((end - start) / step);
-	Nexum_Tensor_init(A, 1, n);
-	f64 curr = start;
-	for(u64 j=0; j<A->n; j++) {
+	Nexum_Tensor_alloc(A, 1, n);
+	DTYPE curr = start;
+    u64 j;
+	Nexum_LOOP(j, A->n) {
 		A->data[j] = curr;
 		curr += step;
 	}
@@ -208,7 +208,7 @@ void Nexum_Tensor_init_arange(Nexum_Tensor* A, f64 start, f64 end, f64 step) {
 /**
  * @brief Allocate and initialize step spaced array
  *
- * The Same as Nexum_Tensor_init_arange() but instead you provide the step size.
+ * The Same as Nexum_Tensor_alloc_arange() but instead you provide the step size.
  * It get calculated using the size of the tensor which passed as an argument.
  *
  * The step is calculated using (end - start) / end;
@@ -220,10 +220,10 @@ void Nexum_Tensor_init_arange(Nexum_Tensor* A, f64 start, f64 end, f64 step) {
  *
  * @return void
  */
-void Nexum_Tensor_init_linspace(Nexum_Tensor* A, f64 start, f64 end, u64 size) {
-	f64 step = (end - start) / (f64)size;
-	Nexum_Tensor_init(A, 1, size);
-	Nexum_Tensor_init_arange(A, start, end, step);
+Nexum_CDEF void Nexum_Tensor_alloc_linspace(Nexum_Tensor* A, DTYPE start, DTYPE end, u64 size) {
+	DTYPE step = (end - start) / (DTYPE)size;
+	Nexum_Tensor_alloc(A, 1, size);
+	Nexum_Tensor_alloc_arange(A, start, end, step);
 }
 
 /**
@@ -231,16 +231,28 @@ void Nexum_Tensor_init_linspace(Nexum_Tensor* A, f64 start, f64 end, u64 size) {
  *
  *
  * @param
- * @param
+ * @paramfor
  *
  * @return void
  */
-void Nexum_Tensor_set_data(Nexum_Tensor* A, f64* data) {
+Nexum_CDEF void Nexum_Tensor_set_data(Nexum_Tensor* A, DTYPE* data) {
 	if(A->allocated) {
 		printf("here\n");
 		A->data = data;
 	}
 }
+
+
+/**
+ * @brief Copy the data of tensor to another
+ * 
+ * @param C pointer to the reciever tensor.
+ * @param A pointer to the doner tensor.
+ */
+Nexum_CDEF void Nexum_Tensor_copy_data(Nexum_Tensor* C, Nexum_Tensor* A) {
+    
+}
+
 
 /**
  * @brief Perform element wize addition operation
@@ -251,21 +263,15 @@ void Nexum_Tensor_set_data(Nexum_Tensor* A, f64* data) {
  *
  * @return void
  */
-void Nexum_Tensor_add_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
+Nexum_CDEF void Nexum_Tensor_add_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
 	if (!(A->m == B->m && A->n == B->n)) {
 		fprintf(stderr, "Cannot add two matrices with shape (%lu, %lu), (%lu, %lu).\n",
 				A->m, A->n, B->m, B->n);
 		exit(EXIT_FAILURE);
 	}
 
-	Nexum_Tensor_init(C, A->m, A->n);
+	Nexum_Tensor_alloc(C, A->m, A->n);
 	cblas_dgeadd(CblasRowMajor, C->m, C->n, 1.0, A->data, A->n, 1.0, C->data, C->n);
-
-	/* for(u64 i=0; i<C->m; i++) { */
-	/* 	for(u64 j=0; j<C->n; j++) { */
-	/* 		C->data[C->n*i + j] = A->data[A->n*i + j] + B->data[B->n*i + j]; */
-	/* 	} */
-	/* } */
 }
 
 /**
@@ -277,14 +283,14 @@ void Nexum_Tensor_add_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
  *
  * @return void
  */
-void Nexum_Tensor_sub_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
+Nexum_CDEF void Nexum_Tensor_sub_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
 	if (!(A->m == B->m && A->n == B->n)) {
 		fprintf(stderr, "Cannot add two matrices with shape (%lu, %lu), (%lu, %lu).\n",
 				A->m, A->n, B->m, B->n);
 		exit(EXIT_FAILURE);
 	}
 
-	Nexum_Tensor_init(C, A->m, A->n);
+	Nexum_Tensor_alloc(C, A->m, A->n);
 	cblas_dgeadd(CblasRowMajor, C->m, C->n, 1.0, A->data, A->n, 1.0, C->data, C->n);
 }
 
@@ -297,14 +303,14 @@ void Nexum_Tensor_sub_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
  *
  * @return void
  */
-void Nexum_Tensor_mul_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
+Nexum_CDEF void Nexum_Tensor_mul_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
 	if (!(A->m == B->m && A->n == B->n)) {
 		fprintf(stderr, "Cannot add two matrices with shape (%lu, %lu), (%lu, %lu).\n",
 				A->m, A->n, B->m, B->n);
 		exit(EXIT_FAILURE);
 	}
 
-	Nexum_Tensor_init(C, A->m, A->n);
+	Nexum_Tensor_alloc(C, A->m, A->n);
 	cblas_dgeadd(CblasRowMajor, C->m, C->n, 1.0, A->data, A->n, 1.0, C->data, C->n);
 }
 
@@ -317,14 +323,14 @@ void Nexum_Tensor_mul_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
  *
  * @return void
  */
-void Nexum_Tensor_div_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
+Nexum_CDEF void Nexum_Tensor_div_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
 	if (!(A->m == B->m && A->n == B->n)) {
 		fprintf(stderr, "Cannot add two matrices with shape (%lu, %lu), (%lu, %lu).\n",
 				A->m, A->n, B->m, B->n);
 		exit(EXIT_FAILURE);
 	}
 
-	Nexum_Tensor_init(C, A->m, A->n);
+	Nexum_Tensor_alloc(C, A->m, A->n);
 	cblas_dgeadd(CblasRowMajor, C->m, C->n, 1.0, A->data, A->n, 1.0, C->data, C->n);
 }
 
@@ -337,10 +343,10 @@ void Nexum_Tensor_div_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
  *
  * @return void
  */
-void Nexum_Tensor_add_tensor_boradcast(Nexum_Tensor* C, Nexum_Tensor* B, Nexum_Tensor* A, u8 axis) {
-	if (axis == BROADCAST_AXIS_ROW) {
+Nexum_CDEF void Nexum_Tensor_add_tensor_boradcast(Nexum_Tensor* C, Nexum_Tensor* B, Nexum_Tensor* A, u8 axis) {
+	if (axis == Nexum_AXIS_ROW) {
 
-	} else if (axis == BROADCAST_AXIS_COL) {
+	} else if (axis == Nexum_AXIS_COL) {
 
 	}
 }
@@ -354,10 +360,10 @@ void Nexum_Tensor_add_tensor_boradcast(Nexum_Tensor* C, Nexum_Tensor* B, Nexum_T
  *
  * @return void
  */
-void Nexum_Tensor_sub_tensor_boradcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B, u8 axis) {
-	if (axis == BROADCAST_AXIS_ROW) {
+Nexum_CDEF void Nexum_Tensor_sub_tensor_boradcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B, u8 axis) {
+	if (axis == Nexum_AXIS_ROW) {
 
-	} else if (axis == BROADCAST_AXIS_COL) {
+	} else if (axis == Nexum_AXIS_COL) {
 
 	}
 }
@@ -371,10 +377,10 @@ void Nexum_Tensor_sub_tensor_boradcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_T
  *
  * @return void
  */
-void Nexum_Tensor_mul_tensor_broadcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B, u8 axis) {
-	if (axis == BROADCAST_AXIS_ROW) {
+Nexum_CDEF void Nexum_Tensor_mul_tensor_broadcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B, u8 axis) {
+	if (axis == Nexum_AXIS_ROW) {
 
-	} else if (axis == BROADCAST_AXIS_COL) {
+	} else if (axis == Nexum_AXIS_COL) {
 
 	}
 }
@@ -388,10 +394,10 @@ void Nexum_Tensor_mul_tensor_broadcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_T
  *
  * @return void
  */
-void Nexum_Tensor_div_tensor_broadcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B, u8 axis) {
-	if (axis == BROADCAST_AXIS_ROW) {
+Nexum_CDEF void Nexum_Tensor_div_tensor_broadcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B, u8 axis) {
+	if (axis == Nexum_AXIS_ROW) {
 
-	} else if (axis == BROADCAST_AXIS_COL) {
+	} else if (axis == Nexum_AXIS_COL) {
 
 	}
 }
@@ -405,10 +411,11 @@ void Nexum_Tensor_div_tensor_broadcast(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_T
  *
  * @return void
  */
-void Nexum_Tensor_add_scalar(Nexum_Tensor* C, Nexum_Tensor* A, f64 B){
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<C->m; i++) {
-		for(u64 j=0; j<C->n; j++) {
+Nexum_CDEF void Nexum_Tensor_add_scalar(Nexum_Tensor* C, Nexum_Tensor* A, DTYPE B){
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			C->data[C->n*i + j] = A->data[A->n*i + j] + B;
 		}
 	}
@@ -423,10 +430,11 @@ void Nexum_Tensor_add_scalar(Nexum_Tensor* C, Nexum_Tensor* A, f64 B){
  *
  * @return void
  */
-void Nexum_Tensor_sub_scalar(Nexum_Tensor* C, Nexum_Tensor* A, f64 B){
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<C->m; i++) {
-		for(u64 j=0; j<C->n; j++) {
+Nexum_CDEF void Nexum_Tensor_sub_scalar(Nexum_Tensor* C, Nexum_Tensor* A, DTYPE B){
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			C->data[C->n*i + j] = A->data[A->n*i + j] - B;
 		}
 	}
@@ -441,10 +449,11 @@ void Nexum_Tensor_sub_scalar(Nexum_Tensor* C, Nexum_Tensor* A, f64 B){
  *
  * @return void
  */
-void Nexum_Tensor_mul_scalar(Nexum_Tensor* C, Nexum_Tensor* A, f64 B){
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<C->m; i++) {
-		for(u64 j=0; j<C->n; j++) {
+Nexum_CDEF void Nexum_Tensor_mul_scalar(Nexum_Tensor* C, Nexum_Tensor* A, DTYPE B){
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			C->data[C->n*i + j] = A->data[A->n*i + j] * B;
 		}
 	}
@@ -459,42 +468,47 @@ void Nexum_Tensor_mul_scalar(Nexum_Tensor* C, Nexum_Tensor* A, f64 B){
  *
  * @return void
  */
-void Nexum_Tensor_div_scalar(Nexum_Tensor* C, Nexum_Tensor* A, f64 B){
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<C->m; i++) {
-		for(u64 j=0; j<C->n; j++) {
+Nexum_CDEF void Nexum_Tensor_div_scalar(Nexum_Tensor* C, Nexum_Tensor* A, DTYPE B){
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			C->data[C->n*i + j] = A->data[A->n*i + j] / B;
 		}
 	}
 }
 
-void Nexum_Tensor_add_scalar_(Nexum_Tensor* A, f64 B){
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_add_scalar_(Nexum_Tensor* A, DTYPE B){
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			A->data[A->n*i + j] = A->data[A->n*i + j] + B;
 		}
 	}
 }
 
-void Nexum_Tensor_sub_scalar_(Nexum_Tensor* A, f64 B){
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_sub_scalar_(Nexum_Tensor* A, DTYPE B){
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			A->data[A->n*i + j] = A->data[A->n*i + j] - B;
 		}
 	}
 }
 
-void Nexum_Tensor_mul_scalar_(Nexum_Tensor* A, f64 B){
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_mul_scalar_(Nexum_Tensor* A, DTYPE B){
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			A->data[A->n*i + j] = A->data[A->n*i + j] * B;
 		}
 	}
 }
 
-void Nexum_Tensor_div_scalar_(Nexum_Tensor* A, f64 B){
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_div_scalar_(Nexum_Tensor* A, DTYPE B){
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			A->data[A->n*i + j] = A->data[A->n*i + j] / B;
 		}
 	}
@@ -520,26 +534,26 @@ void Nexum_Tensor_div_scalar_(Nexum_Tensor* A, f64 B){
  *
  * @return void
  */
-void Nexum_Tensor_matmul_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
+Nexum_CDEF void Nexum_Tensor_matmul_tensor(Nexum_Tensor* C, Nexum_Tensor* A, Nexum_Tensor* B){
 	if(A->n != B->m){
 		fprintf(stderr, "Cannot multiply matrix with shape (%lu, %lu) with (%lu, %lu).\n",
 				A->m, A->n, B->m, B->n);
 		exit(EXIT_FAILURE);
 	}
 
-	Nexum_Tensor_init(C, A->m, B->n);
+	Nexum_Tensor_alloc(C, A->m, B->n);
 
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
 				C->m, C->n, A->n, 1.0, A->data, A->n, B->data, B->n, 1.0, C->data, C->n);
 }
 
-void Nexum_Tensor_reshape(Nexum_Tensor* B, Nexum_Tensor* A, u64 m, u64 n) {
+Nexum_CDEF void Nexum_Tensor_reshape(Nexum_Tensor* B, Nexum_Tensor* A, u64 m, u64 n) {
 	if(m*n != A->m*A->n) {
 		fprintf(stderr, "cannot reshape tensor with shape (%lu, %lu) to (%lu, %lu)\n",
 				A->m, A->n, m, n);
 		exit(EXIT_FAILURE);
 	}
-	Nexum_Tensor_init(B, m, n);
+	Nexum_Tensor_alloc(B, m, n);
 	Nexum_Tensor_set_data(B, A->data);
 }
 
@@ -556,7 +570,7 @@ void Nexum_Tensor_reshape(Nexum_Tensor* B, Nexum_Tensor* A, u64 m, u64 n) {
  * @return void
  */
 
-void Nexum_Tensor_reshape_(Nexum_Tensor* A, u64 m, u64 n) {
+Nexum_CDEF void Nexum_Tensor_reshape_(Nexum_Tensor* A, u64 m, u64 n) {
 	if(m*n != A->m*A->n) {
 		fprintf(stderr, "cannot reshape tensor with shape (%lu, %lu) to (%lu, %lu).\n",
 				A->m, A->n, m, n);
@@ -575,9 +589,9 @@ void Nexum_Tensor_reshape_(Nexum_Tensor* A, u64 m, u64 n) {
  *
  * @return void
  */
-void Nexum_Tensor_transpose(Nexum_Tensor* B, Nexum_Tensor* A) {
+Nexum_CDEF void Nexum_Tensor_transpose(Nexum_Tensor* B, Nexum_Tensor* A) {
 	Nexum_Tensor_free(B);
-	Nexum_Tensor_init(B, A->n, A->m);
+	Nexum_Tensor_alloc(B, A->n, A->m);
 	Nexum_Tensor_set_data(B, A->data);
 }
 
@@ -590,7 +604,7 @@ void Nexum_Tensor_transpose(Nexum_Tensor* B, Nexum_Tensor* A) {
  *
  * @return void
  */
-void Nexum_Tensor_transpose_(Nexum_Tensor* A) {
+Nexum_CDEF void Nexum_Tensor_transpose_(Nexum_Tensor* A) {
 	u64 temp;
 
 	temp = A->n;
@@ -607,10 +621,15 @@ void Nexum_Tensor_transpose_(Nexum_Tensor* A) {
  *
  * @return void
  */
-void Nexum_Tensor_print(Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_print(Nexum_Tensor* A){
+	if (!A->allocated) {
+		fprintf(stderr, "This tensor is not allocated yet.\n");
+		exit(EXIT_FAILURE);
+	}
 	printf("Tensor(%ld, %ld)\n", A->m, A->n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			printf("%5.2f, ", A->data[A->n*i + j]);
 		}
 		printf("\n");
@@ -628,9 +647,14 @@ void Nexum_Tensor_print(Nexum_Tensor* A){
  *
  * @return void.
  * */
-void Nexum_Tensor_print_raw(Nexum_Tensor* A){
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_print_raw(Nexum_Tensor* A){
+	if (!A->allocated) {
+		fprintf(stderr, "This tensor is not allocated yet.\n");
+		exit(EXIT_FAILURE);
+	}
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			printf("%.3e ", A->data[A->n*i + j]);
 		}
 		printf("\n");
@@ -658,7 +682,7 @@ void Nexum_Tensor_print_raw(Nexum_Tensor* A){
  *
  * @return void.
  */
-void Nexum_Tensor_read(Nexum_Tensor* A, str fname) {
+Nexum_CDEF void Nexum_Tensor_read(Nexum_Tensor* A, str fname) {
 	FILE* fptr = fopen(fname, READ_MODE);
 	u64 m, n;
 	if(fptr == NULL) {
@@ -667,9 +691,10 @@ void Nexum_Tensor_read(Nexum_Tensor* A, str fname) {
 	}
 	
 	fscanf(fptr, "%lu %lu", &m, &n);
-	Nexum_Tensor_init(A, m, n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+	Nexum_Tensor_alloc(A, m, n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			fscanf(fptr, "%lf", &(A->data[A->n*i + j]));
 		}
 	}
@@ -679,7 +704,7 @@ void Nexum_Tensor_read(Nexum_Tensor* A, str fname) {
 /**
  * Read a tensor from binary file (.bin).
  */
-void Nexum_Tensor_read_binary(Nexum_Tensor* A, str fname){
+Nexum_CDEF void Nexum_Tensor_read_binary(Nexum_Tensor* A, str fname){
 	FILE* fptr = fopen(fname, READ_BINARY_MODE);
 	u64 m, n;
 	if(fptr == NULL) {
@@ -688,15 +713,19 @@ void Nexum_Tensor_read_binary(Nexum_Tensor* A, str fname){
 	}
 	fread(&m, sizeof (u64), 1, fptr);
 	fread(&n, sizeof (u64), 1, fptr);
-	Nexum_Tensor_init(A, m, n);
-	fread(&(A->data[0]), sizeof (f64), m*n, fptr);
+	Nexum_Tensor_alloc(A, m, n);
+	fread(&(A->data[0]), sizeof (DTYPE), m*n, fptr);
 	fclose(fptr);
 }
 
 /**
  * Write a tensor to utf-8 text file.
  */
-void Nexum_Tensor_write(Nexum_Tensor* A, str fname) {
+Nexum_CDEF void Nexum_Tensor_write(Nexum_Tensor* A, str fname) {
+	if (!A->allocated) {
+		fprintf(stderr, "This tensor is not allocated yet.\n");
+		exit(EXIT_FAILURE);
+	}
 	FILE* fptr = fopen(fname, WRITE_MODE);
 
 	if(fptr == NULL) {
@@ -704,8 +733,9 @@ void Nexum_Tensor_write(Nexum_Tensor* A, str fname) {
 		exit(EXIT_FAILURE);
 	}
 	fprintf(fptr, "%lu %lu\n", A->m, A->n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			fprintf(fptr, "%.3e ", A->data[A->n*i + j]);
 		}
 		fprintf(fptr, "\n");
@@ -717,7 +747,11 @@ void Nexum_Tensor_write(Nexum_Tensor* A, str fname) {
 /**
  * Write a tensor to binary file (.bin).
  */
-void Nexum_Tensor_write_binary(Nexum_Tensor* A, str fname){
+Nexum_CDEF void Nexum_Tensor_write_binary(Nexum_Tensor* A, str fname){
+	if (!A->allocated) {
+		fprintf(stderr, "This tensor is not allocated yet.\n");
+		exit(EXIT_FAILURE);
+	}
 	FILE* fptr = fopen(fname, WRITE_BINARY_MODE);
 
 	if(fptr == NULL) {
@@ -726,7 +760,7 @@ void Nexum_Tensor_write_binary(Nexum_Tensor* A, str fname){
 	}
 	fwrite(&(A->m), sizeof (u64), 1, fptr);
 	fwrite(&(A->n), sizeof (u64), 1, fptr);
-	fwrite(&(A->data[0]), sizeof (f64), A->m*A->n, fptr);
+	fwrite(&(A->data[0]), sizeof (DTYPE), A->m*A->n, fptr);
 	fclose(fptr);
 }
 
@@ -746,7 +780,7 @@ void Nexum_Tensor_write_binary(Nexum_Tensor* A, str fname){
  *
  * @todo Reimplement the function to check any uncleaned memory.
  */
-void Nexum_Tensor_free(Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_free(Nexum_Tensor* A){
 	if(A->allocated) {
 		free(A->data);
 	}
@@ -754,10 +788,11 @@ void Nexum_Tensor_free(Nexum_Tensor* A){
 	A->allocated = false;
 }
 
-f64 Nexum_Tensor_sum(Nexum_Tensor* A) {
-    f64 sum = 0.0;
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+DTYPE Nexum_Tensor_sum(Nexum_Tensor* A) {
+    DTYPE sum = 0.0;
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			sum +=  A->data[A->n*i + j];
 		}
 	}
@@ -771,120 +806,120 @@ u64 Nexum_Tensor_size(Nexum_Tensor* A) {
     return 0;
 }
 
-void Nexum_Tensor_neg(Nexum_Tensor* C, Nexum_Tensor* A){
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<C->m; i++) {
-		for(u64 j=0; j<C->n; j++) {
+Nexum_CDEF void Nexum_Tensor_neg(Nexum_Tensor* C, Nexum_Tensor* A){
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			C->data[C->n*i + j] = -A->data[A->n*i + j];
 		}
 	}
 }
 
-void Nexum_Tensor_neg_(Nexum_Tensor* A) {
+Nexum_CDEF void Nexum_Tensor_neg_(Nexum_Tensor* A) {
 	Nexum_Tensor_neg(A, A);
 }
 
-void Nexum_Tensor_pow(Nexum_Tensor* C, Nexum_Tensor* A, i32 p) {
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_pow(Nexum_Tensor* C, Nexum_Tensor* A, i32 p) {
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			C->data[A->n*i + j] = pow(A->data[A->n*i + j], p);
 		}
 	}
 }
 
-void Nexum_Tensor_pow_(Nexum_Tensor* A, i32 p) {
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_pow_(Nexum_Tensor* A, i32 p) {
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			A->data[A->n*i + j] = pow(A->data[A->n*i + j], p);
 		}
 	}
 }
 
-void Nexum_Tensor_apply  (Nexum_Tensor* C, Nexum_Tensor* A, f64(*pfunc)(f64)) {
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_apply  (Nexum_Tensor* C, Nexum_Tensor* A, DTYPE(*pfunc)(DTYPE)) {
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			C->data[A->n*i + j] = pfunc(A->data[A->n*i + j]);
 		}
 	}
 }
 
-void Nexum_Tensor_apply_ (Nexum_Tensor* A, f64(*pfunc)(f64)) {
+Nexum_CDEF void Nexum_Tensor_apply_ (Nexum_Tensor* A, DTYPE(*pfunc)(DTYPE)) {
 	Nexum_Tensor_apply(A, A, pfunc);
 }
 
-void Nexum_Tensor_abs(Nexum_Tensor* C, Nexum_Tensor* A) {
+Nexum_CDEF void Nexum_Tensor_abs(Nexum_Tensor* C, Nexum_Tensor* A) {
 	Nexum_Tensor_apply(C, A, fabs);
 }
 
-void Nexum_Tensor_abs_(Nexum_Tensor* A) {
+Nexum_CDEF void Nexum_Tensor_abs_(Nexum_Tensor* A) {
 	Nexum_Tensor_apply_(A, fabs);
 }
 
-void Nexum_Tensor_sign   (Nexum_Tensor* C, Nexum_Tensor* A){
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
+Nexum_CDEF void Nexum_Tensor_sign(Nexum_Tensor* C, Nexum_Tensor* A){
+	Nexum_Tensor_alloc(C, A->m, A->n);
+	u64 i, j;
+    Nexum_LOOP(i, A->m) {
+		Nexum_LOOP(j, A->n) {
 			A->data[A->n*i + j] = A->data[A->n*i + j] >= 0 ? 1.f : -1.0f;
 		}
 	}
 }
 
-void Nexum_Tensor_sign_  (Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_sign_(Nexum_Tensor* A){
 	Nexum_Tensor_sign(A, A);
 }
 
-void Nexum_Tensor_square (Nexum_Tensor* C, Nexum_Tensor* A){
-	Nexum_Tensor_init(C, A->m, A->n);
-	for(u64 i=0; i<A->m; i++) {
-		for(u64 j=0; j<A->n; j++) {
-			C->data[A->n*i + j] = pow(A->data[A->n*i + j], 2);
-		}
-	}
+Nexum_CDEF void Nexum_Tensor_square(Nexum_Tensor* C, Nexum_Tensor* A){
+    Nexum_Tensor_pow(C, A, 2);
 }
 
-void Nexum_Tensor_square_(Nexum_Tensor* A){
-	Nexum_Tensor_square(A, A);
+Nexum_CDEF void Nexum_Tensor_square_(Nexum_Tensor* A){
+	Nexum_Tensor_pow_(A, 2);
 }
 
-void Nexum_Tensor_exp    (Nexum_Tensor* C, Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_exp(Nexum_Tensor* C, Nexum_Tensor* A){
 	Nexum_Tensor_apply(C, A, exp);
 }
 
-void Nexum_Tensor_exp_   (Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_exp_(Nexum_Tensor* A){
 	Nexum_Tensor_apply_(A, exp);
 }
 
-void Nexum_Tensor_log    (Nexum_Tensor* C, Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_log(Nexum_Tensor* C, Nexum_Tensor* A){
 	Nexum_Tensor_apply(C, A, log);
 }
 
-void Nexum_Tensor_log_   (Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_log_(Nexum_Tensor* A){
 	Nexum_Tensor_apply_(A, log);
 }
 
-void Nexum_Tensor_log10  (Nexum_Tensor* C, Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_log10  (Nexum_Tensor* C, Nexum_Tensor* A){
 	Nexum_Tensor_apply(C, A, log10);
 }
 
-void Nexum_Tensor_log10_ (Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_log10_ (Nexum_Tensor* A){
 	Nexum_Tensor_apply_(A, log10);
 }
 
-void Nexum_Tensor_cos    (Nexum_Tensor* C, Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_cos(Nexum_Tensor* C, Nexum_Tensor* A){
 	Nexum_Tensor_apply(C, A, cos);
 }
 
-void Nexum_Tensor_cos_   (Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_cos_(Nexum_Tensor* A){
 	Nexum_Tensor_apply_(A, cos);
 }
 
-void Nexum_Tensor_sin    (Nexum_Tensor* C, Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_sin(Nexum_Tensor* C, Nexum_Tensor* A){
 	Nexum_Tensor_apply(C, A, sin);
 }
 
-void Nexum_Tensor_sin_   (Nexum_Tensor* A){
+Nexum_CDEF void Nexum_Tensor_sin_(Nexum_Tensor* A){
 	Nexum_Tensor_apply_(A, sin);
 }
 

@@ -30,14 +30,13 @@
 #include "Nexum_Tensor.h"
 
 /* Nexum_Loss.c */
-f64  Nexum_Loss_mean_squared_error         (Nexum_Tensor*, Nexum_Tensor*);
-f64  Nexum_Loss_mse                        (Nexum_Tensor*, Nexum_Tensor*);
-f64  Nexum_Loss_mean_absolute_error        (Nexum_Tensor*, Nexum_Tensor*);
-f64  Nexum_Loss_mae                        (Nexum_Tensor*, Nexum_Tensor*);
-f64  Nexum_Loss_root_mean_squared_error    (Nexum_Tensor*, Nexum_Tensor*);
-f64  Nexum_Loss_rmse                       (Nexum_Tensor*, Nexum_Tensor*);
-f64  Nexum_Loss_categorical_crossentropy   (Nexum_Tensor*, Nexum_Tensor*);
-f64  Nexum_Loss_binary_crossentropy        (Nexum_Tensor*, Nexum_Tensor*);
-
+f64  Nexum_Loss_mean_squared_error         (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
+f64  Nexum_Loss_mse                        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
+f64  Nexum_Loss_mean_absolute_error        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
+f64  Nexum_Loss_mae                        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
+f64  Nexum_Loss_root_mean_squared_error    (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
+f64  Nexum_Loss_rmse                       (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
+f64  Nexum_Loss_categorical_crossentropy   (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
+f64  Nexum_Loss_binary_crossentropy        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
 
 #endif /* _Nexum_LOSS_H_ */

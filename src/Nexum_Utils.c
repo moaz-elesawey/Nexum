@@ -18,31 +18,50 @@
  ****************************************************************************/
 
 /**
- * @file Nexum_Model.h
- * @author Moaz El-Essawey.
- * @date 11 July 2023.
+ * @file Nexum_Utils.c
+ * @author Moaz El-Essawey
+ * @date 16 July 2023
  */
 
-#ifndef _Nexum_MODEL_H_
-#define _Nexum_MODEL_H_
+#include "Nexum_Utils.h"
 
-#include "Nexum_Core.h"
-#include "Nexum_Activation.h"
+/**
+ * @brief Create and initialize a new list object.
+ *
+ * This function is used to create an instance of Nexum_List object
+ * and store it in plist variable.
+ *
+ * @param plist pointer to the list to create and initialize.
+ */
+void Nexum_List_create(Nexum_List* plist) {}
 
+/**
+ * @brief Add a new element to the list.
+ *
+ * Add a new element of to the list from the back.
+ *
+ * @param plist pointer to the list object.
+ * @param pnode pointer to the node object in memory.
+ */
+void Nexum_List_append(Nexum_List* plist, Nexum_ListNode* pnode) {}
 
-/// Define a Sequential Model like the one in Keras Tensorflow models.
-typedef struct Nexum_ModelSequential {
-	str name; ///< The name of the model.
-}Nexum_ModelSequential;
+/**
+ * @brief Removes an element from the list.
+ *
+ * This function is quit slow as it uses a linear search algorithm
+ * in order to find the element we are looking for.
+ *
+ * @param plist pointer to the list object.
+ * @param pnode pointer to the node object in memory.
+ *
+ * @todo Re-implement the function to use faster searching algo.
+ */
+void Nexum_List_delete(Nexum_List* plist, Nexum_ListNode* pnode) {}
 
-void Nexum_ModelSequential_append_Dense     (u64 in_feature, u64 out_features, Nexum_Activation act);
-void Nexum_ModelSequential_append_Conv1D    (u64 n_filters, u64 kernel_size, u8 stride, u8 padding);
-void Nexum_ModelSequential_append_Conv2D    (u64 n_filters, u64 kernel_size, u8 stride, u8 padding);
-void Nexum_ModelSequential_append_MaxPool1D (u64 pool_size);
-void Nexum_ModelSequential_append_MaxPool2D (u64 pool_size);
+/**
+ * @brief Free the memory from the list data and nodes.
+ *
+ * @param plist pointer to the list to free.
+ */
+void Nexum_List_free(Nexum_List* plist) {}
 
-void Nexum_ModelSequential_train            (Nexum_ModelSequential* model, Nexum_Tensor* x_train, Nexum_Tensor* y_train, u64 batch_size);
-void Nexum_ModelSequential_evaluate         (Nexum_ModelSequential* model);
-void Nexum_ModelSequential_predict          (Nexum_ModelSequential* model);
-
-#endif /* _Nexum_MODEL_H_ */

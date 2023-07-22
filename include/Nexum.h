@@ -55,9 +55,10 @@
 #ifndef _Nexum_H_
 #define _Nexum_H_
 
-#include "Nexum_Dense.h"
+#include "Nexum_Core.h"
+#include "Nexum_Utils.h"
 #include "Nexum_Tensor.h"
-#include "Nexum_Dense.h"
+#include "Nexum_Layers.h"
 #include "Nexum_Loss.h"
 #include "Nexum_Optimizer.h"
 #include "Nexum_Model.h"

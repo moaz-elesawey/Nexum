@@ -31,6 +31,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
+#define Nexum_CDEF
+#define Nexum_ASSERT(stutus) status ? status : exit(EXIT_FAILURE)
+#define Nexum_LOOP(i, m) for(i=0; i<m; i++)
+
 #define READ_MODE          "r"
 #define WRITE_MODE         "w"
 #define READ_BINARY_MODE   "rb"
