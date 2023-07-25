@@ -1,5 +1,5 @@
 CC = gcc
-CC_FLAGS = -g -Wall
+CC_FLAGS = -g -Wall -Wextra -std=c11
 CC_LINKS = -lc -lm
 
 LIB_NAME := libNexum.so
@@ -26,10 +26,10 @@ BIN_TARGET = $(BIN_DIR)/$(BIN_NAME)
 SRCS =                              \
        $(SRC_DIR)/Nexum_Utils.c     \
        $(SRC_DIR)/Nexum_Tensor.c    \
-	   $(SRC_DIR)/Nexum_Layers.c    \
-	   $(SRC_DIR)/Nexum_Loss.c      \
-       $(SRC_DIR)/Nexum_Optimizer.c \
-       $(SRC_DIR)/Nexum_Model.c     \
+	$(SRC_DIR)/Nexum_Layers.c    \
+	$(SRC_DIR)/Nexum_Losses.c    \
+       $(SRC_DIR)/Nexum_Optimizers.c\
+       $(SRC_DIR)/Nexum_Models.c    \
 	   
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 

@@ -33,7 +33,9 @@
  *
  * @param plist pointer to the list to create and initialize.
  */
-void Nexum_List_create(Nexum_List* plist) {}
+void Nexum_List_create(Nexum_List* plist) {
+    (void) plist;
+}
 
 /**
  * @brief Add a new element to the list.
@@ -43,7 +45,10 @@ void Nexum_List_create(Nexum_List* plist) {}
  * @param plist pointer to the list object.
  * @param pnode pointer to the node object in memory.
  */
-void Nexum_List_append(Nexum_List* plist, Nexum_ListNode* pnode) {}
+void Nexum_List_append(Nexum_List* plist, Nexum_ListNode* pnode) {
+    (void) plist;
+    (void) pnode;
+}
 
 /**
  * @brief Removes an element from the list.
@@ -56,12 +61,17 @@ void Nexum_List_append(Nexum_List* plist, Nexum_ListNode* pnode) {}
  *
  * @todo Re-implement the function to use faster searching algo.
  */
-void Nexum_List_delete(Nexum_List* plist, Nexum_ListNode* pnode) {}
+void Nexum_List_delete(Nexum_List* plist, Nexum_ListNode* pnode) {
+    (void) plist;
+    (void) pnode;
+}
 
 /**
  * @brief Free the memory from the list data and nodes.
  *
  * @param plist pointer to the list to free.
  */
-void Nexum_List_free(Nexum_List* plist) {}
+void Nexum_List_free(Nexum_List* plist) {
+    (void) plist;
+}
 

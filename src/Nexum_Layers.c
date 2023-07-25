@@ -46,8 +46,6 @@
  * @param out_features The number of output features.
  * @param act The activation function to be used.
  *
- * @return void
- *
  * @see Nexum_Activation, Nexum_Tensor_alloc_randn(), Nexum_Tensor_alloc_zeros().
  */
 void Nexum_Dense_alloc(Nexum_Dense* L, u64 in_features, u64 out_features, Nexum_Activation act) {
@@ -61,12 +59,14 @@ void Nexum_Dense_alloc(Nexum_Dense* L, u64 in_features, u64 out_features, Nexum_
 }
 
 void Nexum_Dense_forward(Nexum_Dense* L3, Nexum_Dense* L1, Nexum_Dense* L2) {
-	
+	(void) L3;
+	(void) L1;
+	(void) L2;
 }
 
-void Nexum_Dense_print(Nexum_Dense* L) {
-	Nexum_Tensor_print(&(L->weights));
-	Nexum_Tensor_print(&(L->bias));
+void Nexum_Dense_to_string(Nexum_Dense* L) {
+	Nexum_Tensor_to_string(&(L->weights));
+	Nexum_Tensor_to_string(&(L->bias));
 }
 
 void Nexum_Dense_read(Nexum_Dense* L, str fname) {

@@ -1,4 +1,6 @@
-#include "Nexum.h"
+#include "Nexum_Losses.h"
+
+
 #include <stdio.h>
 #include <math.h>
 
@@ -43,10 +45,18 @@ f64 Nexum_Loss_rmse(Nexum_Tensor* y_true, Nexum_Tensor* y_pred) {
 
 f64 Nexum_Loss_categorical_crossentropy(Nexum_Tensor* y_true, Nexum_Tensor* y_pred) {
     f64 loss = 0;
+
+    (void) y_true;
+    (void) y_pred;
+
     return loss;
 }
 
 f64 Nexum_Loss_binary_crossentropy(Nexum_Tensor* y_true, Nexum_Tensor* y_pred) {
     f64 loss = 0;
+
+    (void) y_true;
+    (void) y_pred;
+    
     return loss;
 }

@@ -27,7 +27,7 @@
 #define _Nexum_MODEL_H_
 
 #include "Nexum_Core.h"
-#include "Nexum_Activation.h"
+#include "Nexum_Activations.h"
 
 
 /// Define a Sequential Model like the one in Keras Tensorflow models.

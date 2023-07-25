@@ -59,9 +59,9 @@
 #include "Nexum_Utils.h"
 #include "Nexum_Tensor.h"
 #include "Nexum_Layers.h"
-#include "Nexum_Loss.h"
-#include "Nexum_Optimizer.h"
-#include "Nexum_Model.h"
+#include "Nexum_Losses.h"
+#include "Nexum_Optimizers.h"
+#include "Nexum_Models.h"
 
 
 #endif /* _Nexum_H_ */

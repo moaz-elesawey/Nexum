@@ -30,16 +30,12 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
+#include <stddef.h>
 
-
-#define Nexum_CDEF
-#define Nexum_ASSERT(stutus) status ? status : exit(EXIT_FAILURE)
-#define Nexum_LOOP(i, m) for(i=0; i<m; i++)
-
-#define READ_MODE          "r"
-#define WRITE_MODE         "w"
-#define READ_BINARY_MODE   "rb"
-#define WRITE_BINARY_MODE  "wb"
+/// Whether to show debug messages or not.
+#define Nexum_DEBUG
+// #undef Nexum_DEBUG
 
 typedef int8_t   i8;    ///< shot hand for `int8_t` type
 typedef int16_t  i16;   ///< shot hand for `int16_t` type
@@ -52,5 +48,35 @@ typedef uint64_t u64;   ///< shot hand for `unt64_t` type
 typedef float    f32;   ///< shot hand for `float` type
 typedef double   f64;   ///< shot hand for `double` type
 typedef char*    str;   ///< shot hand for `char*` type
+
+#define READ_MODE          "r"  ///< reading UTF-8 mode
+#define WRITE_MODE         "w"  ///< writing UTF-8 mode
+#define READ_BINARY_MODE   "rb" ///< reading binary mode
+#define WRITE_BINARY_MODE  "wb" ///< weiting binary mode
+
+#define Nexum_DTYPE f64 ///< The default data type of the tensor object.
+#define Nexum_CDEF ///< function definition in Nexum lib.
+#define Nexum_ASSERT(expr) assert(expr)  ///< overloading the assert function in c.
+#define Nexum_MALLOC(size) ((Nexum_DTYPE*)malloc(size)) ///< overloading the malloc function in c.
+#define Nexum_LOOP(i, m) for(i=0; i<m; i++) ///< short hand expr for the ordinary for loop.
+
+/// Raises an error if the func is not implemented yet.
+#define Nexum_NOTIMPLEMENTED(...) \
+    do { \
+        fprintf(stderr, "%s:%d : %s is not implemented yet.\n", \
+                __FILE__, __LINE__, __func__); \
+        abort(); \
+    } while(0)
+
+/// Show error, info messages to the console.
+#ifdef Nexum_DEBUG
+#define Nexum_MESSAGE(status, msg) \
+    do { \
+        fprintf(stderr, "[%s] %s in %s:%d : %s \n", \
+                status, msg, __FILE__, __LINE__, __func__); \
+    } while(0)
+#else
+#define Nexum_MESSAGE(...)
+#endif /* Nexum_DEBUG */
 
 #endif /* _Nexum_CORE_H_ */

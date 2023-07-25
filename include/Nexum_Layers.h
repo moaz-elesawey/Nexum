@@ -28,7 +28,7 @@
 
 #include "Nexum_Core.h"
 #include "Nexum_Tensor.h"
-#include "Nexum_Activation.h"
+#include "Nexum_Activations.h"
 
 /** 
  * @brief Represent more abstraction over `Nexum_Tensor`.
@@ -49,13 +49,12 @@ typedef struct Nexum_Dense {
 
 void Nexum_Dense_alloc                     (Nexum_Dense*, u64, u64, Nexum_Activation);
 void Nexum_Dense_forward                   (Nexum_Dense*, Nexum_Dense*, Nexum_Dense*);
-void Nexum_Dense_print                     (Nexum_Dense*);
+void Nexum_Dense_to_string                 (Nexum_Dense*);
 void Nexum_Dense_read                      (Nexum_Dense*, str);
 void Nexum_Dense_read_binary               (Nexum_Dense*, str);
 void Nexum_Dense_write                     (Nexum_Dense*, str);
 void Nexum_Dense_write_binary              (Nexum_Dense*, str);
 void Nexum_Dense_free                      (Nexum_Dense*);
-
 
 /** 
  * @brief Represent more abstraction over `Nexum_Tensor`.
@@ -76,15 +75,14 @@ typedef struct Nexum_Conv1D {
 }Nexum_Conv1D;
 
 
-void Nexum_Conv1D_alloc                      (Nexum_Conv1D*, u64, u64, Nexum_Activation);
+void Nexum_Conv1D_alloc                     (Nexum_Conv1D*, u64, u64, Nexum_Activation);
 void Nexum_Conv1D_forward                   (Nexum_Conv1D*, Nexum_Conv1D*, Nexum_Conv1D*);
-void Nexum_Conv1D_print                     (Nexum_Conv1D*);
+void Nexum_Conv1D_to_string                 (Nexum_Conv1D*);
 void Nexum_Conv1D_read                      (Nexum_Conv1D*, str);
 void Nexum_Conv1D_read_binary               (Nexum_Conv1D*, str);
 void Nexum_Conv1D_write                     (Nexum_Conv1D*, str);
 void Nexum_Conv1D_write_binary              (Nexum_Conv1D*, str);
 void Nexum_Conv1D_free                      (Nexum_Conv1D*);
-
 
 /** 
  * @brief Represent more abstraction over `Nexum_Tensor`.
@@ -104,10 +102,9 @@ typedef struct Nexum_Conv2D {
 	Nexum_Tensor bias; ///< Tensor to hold the bias term of the layer.
 }Nexum_Conv2D;
 
-
-void Nexum_Conv2D_alloc                      (Nexum_Conv2D*, u64, u64, Nexum_Activation);
+void Nexum_Conv2D_alloc                     (Nexum_Conv2D*, u64, u64, Nexum_Activation);
 void Nexum_Conv2D_forward                   (Nexum_Conv2D*, Nexum_Conv2D*, Nexum_Conv2D*);
-void Nexum_Conv2D_print                     (Nexum_Conv2D*);
+void Nexum_Conv2D_to_string                 (Nexum_Conv2D*);
 void Nexum_Conv2D_read                      (Nexum_Conv2D*, str);
 void Nexum_Conv2D_read_binary               (Nexum_Conv2D*, str);
 void Nexum_Conv2D_write                     (Nexum_Conv2D*, str);
