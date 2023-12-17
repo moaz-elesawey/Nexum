@@ -1,3 +1,40 @@
+#ifndef _NxOPTIMIZER_H_
+#define _NxOPTIMIZER_H_
+
+#include "NxCore.h"
+
+/// Model Parameters to Optimize.
+typedef struct NxOptimizerParameters{
+
+}NxOptimizerParameters;
+
+
+/// Stachistic Gradient Descent
+typedef struct NxOptimizerSGD{
+	f64 lr; ///< Learning rate or step size.
+}NxOptimizerSGD;
+
+void NxOptimizerSGD_zero_gradients         (void);
+void NxOptimizerSGD_update_parameters      (void);
+
+/// Applying Simple Momentum to SGD
+typedef struct NxOptimizerMomentum {
+	f64 lr; ///< Learning rate or step size.
+}NxOptimizerMomentum;
+
+void NxOptimizerMomentum_zero_gradients    (void);
+void NxOptimizerMomentum_update_parameters (void);
+
+/// Applying More Complex Momentum to SGD.
+typedef struct NxOptimizerAdam {
+	f64 lr; ///< Learning rate or step size.
+}NxOptimizerAdam;
+
+void NxOptimizerAdam_zero_gradients        (void);
+void NxOptimizerAdam_update_parameters     (void);
+
+#endif /* _NxOPTIMIZER_H_ */
+
 /****************************************************************************
  * Copyright (C) 2023 by Moaz Mohammed El-Essawey                           *
  *                                                                          *
@@ -18,60 +55,7 @@
  ****************************************************************************/
 
 /**
- * @file Nexum_Utils.c
- * @author Moaz El-Essawey
- * @date 16 July 2023
+ * @file NxOptimizer.h
+ * @author Moaz El-Essawey.
+ * @date 11 July 2023.
  */
-
-#include "Nexum_Utils.h"
-
-/**
- * @brief Create and initialize a new list object.
- *
- * This function is used to create an instance of Nexum_List object
- * and store it in plist variable.
- *
- * @param plist pointer to the list to create and initialize.
- */
-void Nexum_List_create(Nexum_List* plist) {
-    (void) plist;
-}
-
-/**
- * @brief Add a new element to the list.
- *
- * Add a new element of to the list from the back.
- *
- * @param plist pointer to the list object.
- * @param pnode pointer to the node object in memory.
- */
-void Nexum_List_append(Nexum_List* plist, Nexum_ListNode* pnode) {
-    (void) plist;
-    (void) pnode;
-}
-
-/**
- * @brief Removes an element from the list.
- *
- * This function is quit slow as it uses a linear search algorithm
- * in order to find the element we are looking for.
- *
- * @param plist pointer to the list object.
- * @param pnode pointer to the node object in memory.
- *
- * @todo Re-implement the function to use faster searching algo.
- */
-void Nexum_List_delete(Nexum_List* plist, Nexum_ListNode* pnode) {
-    (void) plist;
-    (void) pnode;
-}
-
-/**
- * @brief Free the memory from the list data and nodes.
- *
- * @param plist pointer to the list to free.
- */
-void Nexum_List_free(Nexum_List* plist) {
-    (void) plist;
-}
-

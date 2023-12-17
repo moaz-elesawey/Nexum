@@ -1,3 +1,21 @@
+#ifndef _NxLOSS_H_
+#define _NxLOSS_H_
+
+#include "NxCore.h"
+#include "NxTensor.h"
+
+/* NxLoss.c */
+f64  NxLoss_mean_squared_error         (NxTensor* y_true, NxTensor* y_pred);
+f64  NxLoss_mse                        (NxTensor* y_true, NxTensor* y_pred);
+f64  NxLoss_mean_absolute_error        (NxTensor* y_true, NxTensor* y_pred);
+f64  NxLoss_mae                        (NxTensor* y_true, NxTensor* y_pred);
+f64  NxLoss_root_mean_squared_error    (NxTensor* y_true, NxTensor* y_pred);
+f64  NxLoss_rmse                       (NxTensor* y_true, NxTensor* y_pred);
+f64  NxLoss_categorical_crossentropy   (NxTensor* y_true, NxTensor* y_pred);
+f64  NxLoss_binary_crossentropy        (NxTensor* y_true, NxTensor* y_pred);
+
+#endif /* _NxLOSS_H_ */
+
 /****************************************************************************
  * Copyright (C) 2023 by Moaz Mohammed El-Essawey                           *
  *                                                                          *
@@ -18,25 +36,8 @@
  ****************************************************************************/
 
 /**
- * @file Nexum_Activation.h
+ * @file NxLoss.h
  * @author Moaz El-Essawey.
  * @date 11 July 2023.
  */
-
-#ifndef _Nexum_ACTIVATION_H_
-#define _Nexum_ACTIVATION_H_
-
-#include "Nexum_Core.h"
-
-/// Simple Enum to store the type of Activations can be used to the Neural Network Layers.
-typedef enum Nexum_Activation {
-	Nexum_Activation_None, ///< Applies Not Activation
-	Nexum_Activation_ReLU, ///< Applies Rectified Linear Unit Activation.
-	Nexum_Activation_Sigmoid, ///< Applies Sigmoid Activation.
-	Nexum_Activation_Tanh, ///< Applies Tanh Activation.
-	Nexum_Activation_ELU, ///< Applies Exponential Linear Unit Activation.
-	Nexum_Activation_PReLU, ///< Applies Leaky Rectified Linear Unit Activation.
-} Nexum_Activation;
-
-#endif /* _Nexum_ACTIVATION_H_ */
 

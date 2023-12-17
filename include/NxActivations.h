@@ -1,3 +1,20 @@
+#ifndef _NxACTIVATION_H_
+#define _NxACTIVATION_H_
+
+#include "NxCore.h"
+
+/// Simple Enum to store the type of Activations can be used to the Neural Network Layers.
+typedef enum NxActivation {
+	NxActivation_None, ///< Applies Not Activation
+	NxActivation_ReLU, ///< Applies Rectified Linear Unit Activation.
+	NxActivation_Sigmoid, ///< Applies Sigmoid Activation.
+	NxActivation_Tanh, ///< Applies Tanh Activation.
+	NxActivation_ELU, ///< Applies Exponential Linear Unit Activation.
+	NxActivation_PReLU, ///< Applies Leaky Rectified Linear Unit Activation.
+} NxActivation;
+
+#endif /* _NxACTIVATION_H_ */
+
 /****************************************************************************
  * Copyright (C) 2023 by Moaz Mohammed El-Essawey                           *
  *                                                                          *
@@ -18,25 +35,8 @@
  ****************************************************************************/
 
 /**
- * @file Nexum_Loss.h
+ * @file NxActivation.h
  * @author Moaz El-Essawey.
  * @date 11 July 2023.
  */
 
-#ifndef _Nexum_LOSS_H_
-#define _Nexum_LOSS_H_
-
-#include "Nexum_Core.h"
-#include "Nexum_Tensor.h"
-
-/* Nexum_Loss.c */
-f64  Nexum_Loss_mean_squared_error         (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-f64  Nexum_Loss_mse                        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-f64  Nexum_Loss_mean_absolute_error        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-f64  Nexum_Loss_mae                        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-f64  Nexum_Loss_root_mean_squared_error    (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-f64  Nexum_Loss_rmse                       (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-f64  Nexum_Loss_categorical_crossentropy   (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-f64  Nexum_Loss_binary_crossentropy        (Nexum_Tensor* y_true, Nexum_Tensor* y_pred);
-
-#endif /* _Nexum_LOSS_H_ */

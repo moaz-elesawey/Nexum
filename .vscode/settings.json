@@ -1,0 +1,7 @@
+{
+    "C_Cpp.default.compilerPath": "c:\\CodeBlocks\\MinGW\\bin\\gcc.exe",
+    "files.associations": {
+        "nexum.h": "c",
+        "nxmodels.h": "c"
+    }
+}

@@ -1,3 +1,55 @@
+#include "NxUtils.h"
+
+/**
+ * @brief Create and initialize a new list object.
+ *
+ * This function is used to create an instance of NxList object
+ * and store it in plist variable.
+ *
+ * @param plist pointer to the list to create and initialize.
+ */
+void NxList_create(NxList* plist) {
+    (void) plist;
+}
+
+/**
+ * @brief Add a new element to the list.
+ *
+ * Add a new element of to the list from the back.
+ *
+ * @param plist pointer to the list object.
+ * @param pnode pointer to the node object in memory.
+ */
+void NxList_append(NxList* plist, NxListNode* pnode) {
+    (void) plist;
+    (void) pnode;
+}
+
+/**
+ * @brief Removes an element from the list.
+ *
+ * This function is quit slow as it uses a linear search algorithm
+ * in order to find the element we are looking for.
+ *
+ * @param plist pointer to the list object.
+ * @param pnode pointer to the node object in memory.
+ *
+ * @todo Re-implement the function to use faster searching algo.
+ */
+void NxList_delete(NxList* plist, NxListNode* pnode) {
+    (void) plist;
+    (void) pnode;
+}
+
+/**
+ * @brief Free the memory from the list data and nodes.
+ *
+ * @param plist pointer to the list to free.
+ */
+void NxList_free(NxList* plist) {
+    (void) plist;
+}
+
 /****************************************************************************
  * Copyright (C) 2023 by Moaz Mohammed El-Essawey                           *
  *                                                                          *
@@ -18,45 +70,7 @@
  ****************************************************************************/
 
 /**
- * @file Nexum_Optimizer.h
- * @author Moaz El-Essawey.
- * @date 11 July 2023.
+ * @file NxUtils.c
+ * @author Moaz El-Essawey
+ * @date 16 July 2023
  */
-
-#ifndef _Nexum_OPTIMIZER_H_
-#define _Nexum_OPTIMIZER_H_
-
-#include "Nexum_Core.h"
-
-/// Model Parameters to Optimize.
-typedef struct Nexum_OptimizerParameters{
-
-}Nexum_OptimizerParameters;
-
-
-/// Stachistic Gradient Descent
-typedef struct Nexum_OptimizerSGD{
-	f64 lr; ///< Learning rate or step size.
-}Nexum_OptimizerSGD;
-
-void Nexum_OptimizerSGD_zero_gradients         (void);
-void Nexum_OptimizerSGD_update_parameters      (void);
-
-/// Applying Simple Momentum to SGD
-typedef struct Nexum_OptimizerMomentum {
-	f64 lr; ///< Learning rate or step size.
-}Nexum_OptimizerMomentum;
-
-void Nexum_OptimizerMomentum_zero_gradients    (void);
-void Nexum_OptimizerMomentum_update_parameters (void);
-
-/// Applying More Complex Momentum to SGD.
-typedef struct Nexum_OptimizerAdam {
-	f64 lr; ///< Learning rate or step size.
-}Nexum_OptimizerAdam;
-
-void Nexum_OptimizerAdam_zero_gradients        (void);
-void Nexum_OptimizerAdam_update_parameters     (void);
-
-#endif /* _Nexum_OPTIMIZER_H_ */
-

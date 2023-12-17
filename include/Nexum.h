@@ -1,3 +1,17 @@
+#ifndef _NxH_
+#define _NxH_
+
+#include "NxCore.h"
+#include "NxUtils.h"
+#include "NxTensor.h"
+#include "NxLayers.h"
+#include "NxLosses.h"
+#include "NxOptimizers.h"
+#include "NxModels.h"
+
+
+#endif /* _NxH_ */
+
 /****************************************************************************
  * Copyright (C) 2023 by Moaz Mohammed El-Essawey                           *
  *                                                                          *
@@ -51,18 +65,4 @@
  * @date 11 July 2023.
  */
 
-
-#ifndef _Nexum_H_
-#define _Nexum_H_
-
-#include "Nexum_Core.h"
-#include "Nexum_Utils.h"
-#include "Nexum_Tensor.h"
-#include "Nexum_Layers.h"
-#include "Nexum_Losses.h"
-#include "Nexum_Optimizers.h"
-#include "Nexum_Models.h"
-
-
-#endif /* _Nexum_H_ */
 

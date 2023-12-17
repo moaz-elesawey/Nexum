@@ -1,6 +1,6 @@
 CC = gcc
 CC_FLAGS = -g -Wall -Wextra -std=c11
-CC_LINKS = -lc -lm
+# CC_LINKS = -lc -lm
 
 LIB_NAME := libNexum.so
 BIN_NAME := Nexum.out
@@ -15,21 +15,21 @@ LIB_DIR := lib
 TEST_DIR := tests
 
 
-Nexum_FLAGS = -Iinclude
-Nexum_LINKS = -Llib
+NxFLAGS = -Iinclude
+NxLINKS = -Llib
 BLAS_INC = -I/usr/local/include/openblas
-BLAS_LINKS = -lopenblas
+# BLAS_LINKS = -lopenblas
 
 LIB_TARGET = $(LIB_DIR)/$(LIB_NAME)
 BIN_TARGET = $(BIN_DIR)/$(BIN_NAME)
 
-SRCS =                              \
-       $(SRC_DIR)/Nexum_Utils.c     \
-       $(SRC_DIR)/Nexum_Tensor.c    \
-	$(SRC_DIR)/Nexum_Layers.c    \
-	$(SRC_DIR)/Nexum_Losses.c    \
-       $(SRC_DIR)/Nexum_Optimizers.c\
-       $(SRC_DIR)/Nexum_Models.c    \
+SRCS =                             \
+		$(SRC_DIR)/NxUtils.c       \
+	   	$(SRC_DIR)/NxTensor.c      \
+		$(SRC_DIR)/NxLayers.c      \
+		$(SRC_DIR)/NxLosses.c      \
+       	$(SRC_DIR)/NxOptimizers.c  \
+       	$(SRC_DIR)/NxModels.c      \
 	   
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
@@ -48,13 +48,13 @@ $(LIB_TARGET): $(OBJS)
 	$(CC) $(CC_FLAGS) $(OBJS) -shared -o $@ $(CC_LINKS) $(BLAS_LINKS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CC_FLAGS) -fPIC -c $< -o $@ $(Nexum_FLAGS) $(BLAS_INC)
+	$(CC) $(CC_FLAGS) -fPIC -c $< -o $@ $(NxFLAGS) $(BLAS_INC)
 
 $(BIN_TARGET): $(TEST_SRCS)
-	$(CC) $(CC_FLAGS) $< -o $@ $(Nexum_FLAGS) $(Nexum_LINKS) $(CC_LINKS) -lNexum 
+	$(CC) $(CC_FLAGS) $< -o $@ $(NxFLAGS) $(NxLINKS) $(CC_LINKS) -lNexum 
 
 $(APP_DIR)/%.out: $(APP_DIR)/%.c
-	$(CC) $(CC_FLAGS) $< -o $@ $(Nexum_FLAGS) $(Nexum_LINKS) $(CC_LINKS) -lNexum
+	$(CC) $(CC_FLAGS) $< -o $@ $(NxFLAGS) $(NxLINKS) $(CC_LINKS) -lNexum
 
 docs:
 	@echo "Generating Docs..."
